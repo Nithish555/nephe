@@ -702,6 +702,15 @@ spec:
   selector:
     control-plane: nephe-controller
 ---
+# apiVersion: v1
+# kind: ConfigMap
+# metadata:
+#  name: name-config
+#  namespace: nephe-system
+# data:
+#  NAME_PREFIX: anp
+# immutable: true
+# ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -755,6 +764,10 @@ spec:
         secret:
           defaultMode: 420
           secretName: serving-cert
+      envFrom:
+        - configMapRef:
+            name: name-config
+            optional: true
 ---
 apiVersion: apiregistration.k8s.io/v1
 kind: APIService

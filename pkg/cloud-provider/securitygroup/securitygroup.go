@@ -15,15 +15,15 @@
 package securitygroup
 
 import (
+	cloud "antrea.io/nephe/apis/crd/v1alpha1"
 	"crypto/sha1"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"net"
+	"os"
 	"reflect"
 	"strings"
-
-	cloud "antrea.io/nephe/apis/crd/v1alpha1"
 )
 
 /*
@@ -104,8 +104,8 @@ Antrea internal NetworkPolicy To SecurityGroup Mapping strategy
 // CloudResourceType specifies the type of cloud resource.
 type CloudResourceType string
 
-const (
-	NepheControllerPrefix             = "nephe-"
+var (
+	NepheControllerPrefix             = getName()
 	NepheControllerAddressGroupPrefix = NepheControllerPrefix + "ag-"
 	NepheControllerAppliedToPrefix    = NepheControllerPrefix + "at-"
 )
@@ -141,6 +141,13 @@ type CloudResourceID struct {
 	Vpc  string
 }
 
+func getName() string {
+	name, val := os.LookupEnv("NAME_PREFIX")
+	if val {
+		return name
+	}
+	return "nephe-"
+}
 func (c *CloudResource) String() string {
 	return string(c.Type) + "/" + c.CloudResourceID.String()
 }
